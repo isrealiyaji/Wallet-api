@@ -7,3 +7,5 @@ build/
 coverage/
 .vscode/
 .idea/
+.API_EXAMPLE.md
+.QUICKSTART.md
