@@ -45,7 +45,7 @@ const limiter = rateLimit({
 
 app.use("/api/", limiter);
 
-// Welcome route
+
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -65,18 +65,16 @@ app.use(errorHandler);
 // Start server
 app.listen(PORT, () => {
   console.log(`
-  ╔════════════════════════════════════════╗
-  ║   🚀 Wallet App API Server Running    ║
-  ║                                        ║
-  ║   Environment: ${
+   Wallet App API Server Runnin
+    Environment: ${
     process.env.NODE_ENV?.padEnd(24) || "development".padEnd(24)
-  }║
-  ║   Port: ${PORT.toString().padEnd(31)}║
-  ║   URL: http://localhost:${PORT.toString().padEnd(17)}║
-  ║                                        ║
-  ║   📚 API Documentation:                ║
-  ║   http://localhost:${PORT}/api/health${" ".padEnd(8)}║
-  ╚════════════════════════════════════════╝
+  }
+     Port: ${PORT.toString().padEnd(31)}
+     URL: http://localhost:${PORT.toString().padEnd(17)}
+                                          
+     📚 API Documentation:                
+     http://localhost:${PORT}/api/health${" ".padEnd(8)}
+  
   `);
 });
 
