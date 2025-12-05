@@ -56,7 +56,7 @@ app.get("/", (req, res) => {
 });
 
 // API routes
-app.use("/api", routes);
+app.use("/", routes);
 
 // Error handling
 app.use(notFound);
