@@ -51,7 +51,7 @@ app.get("/", (req, res) => {
     success: true,
     message: "Welcome to Wallet App API",
     version: "1.0.0",
-    documentation: "/api/health",
+    documentation: "/health",
   });
 });
 
@@ -62,7 +62,7 @@ app.use("/", routes);
 app.use(notFound);
 app.use(errorHandler);
 
-// Start server
+// Start serve
 app.listen(PORT, () => {
   console.log(`
    Wallet App API Server Runnin
@@ -72,8 +72,8 @@ app.listen(PORT, () => {
      Port: ${PORT.toString().padEnd(31)}
      URL: http://localhost:${PORT.toString().padEnd(17)}
                                           
-     📚 API Documentation:                
-     http://localhost:${PORT}/api/health${" ".padEnd(8)}
+     API Documentation:                
+     http://localhost:${PORT}/health${" ".padEnd(8)}
   
   `);
 });
