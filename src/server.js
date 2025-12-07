@@ -12,7 +12,7 @@ import "./config/database.js"; // Initialize database connection
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 55000;
 
 // Security middleware
 app.use(helmet());
