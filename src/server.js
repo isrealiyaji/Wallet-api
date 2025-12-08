@@ -6,7 +6,7 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import routes from "./routes/index.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
-import "./config/database.js"; // Initialize database connection
+import "./config/database.js"; 
 
 // Load environment variables
 dotenv.config();
