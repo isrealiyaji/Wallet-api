@@ -7,7 +7,6 @@ const prisma = new PrismaClient({
       : ["error"],
 });
 
-// Handle connection errors
 prisma
   .$connect()
   .then(() => {
@@ -18,7 +17,7 @@ prisma
     process.exit(1);
   });
 
-// Graceful shutdown
+
 process.on("beforeExit", async () => {
   await prisma.$disconnect();
 });

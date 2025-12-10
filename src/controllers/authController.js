@@ -4,14 +4,11 @@ import { generateToken, generateAccountNumber } from "../utils/helpers.js";
 import { sendOTP, verifyOTP } from "../services/otpService.js";
 import { sendWelcomeEmail } from "../services/emailService.js";
 
-/**
- * Register new user
- */
+
 export const register = async (req, res) => {
   try {
     const { email, phone, password, firstName, lastName } = req.body;
 
-    // Check if user already exists
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [{ email }, ...(phone ? [{ phone }] : [])],
@@ -25,7 +22,6 @@ export const register = async (req, res) => {
       });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user and wallet in a transaction
@@ -62,13 +58,13 @@ export const register = async (req, res) => {
       return newUser;
     });
 
-    // Send OTP for email verification
+ 
     await sendOTP(user.id, user.email, "EMAIL_VERIFICATION");
 
-    // Send welcome email (async, don't wait)
+   
     sendWelcomeEmail(user.email, user.firstName).catch(console.error);
 
-    // Generate token
+    
     const token = generateToken({ userId: user.id });
 
     res.status(201).json({
@@ -90,9 +86,7 @@ export const register = async (req, res) => {
   }
 };
 
-/**
- * Login user
- */
+
 export const login = async (req, res) => {
   try {
     const { emailOrPhone, password } = req.body;
@@ -119,7 +113,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -128,7 +121,7 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check account status
+ 
     if (user.status !== "ACTIVE") {
       return res.status(403).json({
         success: false,
@@ -139,7 +132,7 @@ export const login = async (req, res) => {
     // Generate token
     const token = generateToken({ userId: user.id });
 
-    // Remove password from response
+   
     delete user.password;
 
     res.status(200).json({
@@ -160,15 +153,13 @@ export const login = async (req, res) => {
   }
 };
 
-/**
- * Verify email with OTP
- */
+
 export const verifyEmail = async (req, res) => {
   try {
     const { otp } = req.body;
     const userId = req.user.id;
 
-    // Verify OTP
+  
     const result = await verifyOTP(userId, otp, "EMAIL_VERIFICATION");
 
     if (!result.success) {
@@ -198,16 +189,14 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
-/**
- * Resend OTP
- */
+
 export const resendOTP = async (req, res) => {
   try {
     const { type } = req.body;
     const userId = req.user.id;
     const email = req.user.email;
 
-    // Send new OTP
+    
     const result = await sendOTP(userId, email, type || "EMAIL_VERIFICATION");
 
     if (!result.success) {
@@ -232,9 +221,7 @@ export const resendOTP = async (req, res) => {
   }
 };
 
-/**
- * Request password reset
- */
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -245,14 +232,13 @@ export const forgotPassword = async (req, res) => {
     });
 
     if (!user) {
-      // Don't reveal if user exists
       return res.status(200).json({
         success: true,
         message: "If the email exists, a password reset OTP has been sent",
       });
     }
 
-    // Send OTP
+
     await sendOTP(user.id, user.email, "PASSWORD_RESET");
 
     res.status(200).json({
@@ -269,9 +255,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-/**
- * Reset password with OTP
- */
+
 export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
@@ -298,7 +282,7 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    // Hash new password
+   
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update password
@@ -321,9 +305,7 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-/**
- * Get current user
- */
+
 export const getCurrentUser = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
