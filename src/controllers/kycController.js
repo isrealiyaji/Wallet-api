@@ -1,8 +1,5 @@
 import prisma from "../config/database.js";
 
-/**
- * Submit KYC - Tier 1
- */
 export const submitTier1KYC = async (req, res) => {
   try {
     const { bvn, dateOfBirth, address } = req.body;
@@ -54,9 +51,7 @@ export const submitTier1KYC = async (req, res) => {
   }
 };
 
-/**
- * Submit KYC - Tier 2
- */
+
 export const submitTier2KYC = async (req, res) => {
   try {
     const { idType, idNumber, idImageUrl } = req.body;
@@ -102,9 +97,7 @@ export const submitTier2KYC = async (req, res) => {
   }
 };
 
-/**
- * Submit KYC - Tier 3
- */
+
 export const submitTier3KYC = async (req, res) => {
   try {
     const { utilityBillUrl, selfieUrl } = req.body;
@@ -149,9 +142,7 @@ export const submitTier3KYC = async (req, res) => {
   }
 };
 
-/**
- * Get KYC status
- */
+
 export const getKYCStatus = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -184,9 +175,7 @@ export const getKYCStatus = async (req, res) => {
   }
 };
 
-/**
- * Approve KYC (Admin only - simplified for demo)
- */
+
 export const approveKYC = async (req, res) => {
   try {
     const { userId, level } = req.body;
@@ -225,9 +214,7 @@ export const approveKYC = async (req, res) => {
   }
 };
 
-/**
- * Reject KYC (Admin only - simplified for demo)
- */
+
 export const rejectKYC = async (req, res) => {
   try {
     const { userId, reason } = req.body;
