@@ -7,9 +7,7 @@ import {
 import { verifyPin } from "./profileController.js";
 import { sendTransactionEmail } from "../services/emailService.js";
 
-/**
- * Get wallet details
- */
+
 export const getWallet = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -45,9 +43,7 @@ export const getWallet = async (req, res) => {
   }
 };
 
-/**
- * Fund wallet via bank transfer (simulation)
- */
+
 export const fundViaBankTransfer = async (req, res) => {
   try {
     const { amount } = req.body;

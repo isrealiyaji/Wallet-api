@@ -2,9 +2,7 @@ import bcrypt from "bcryptjs";
 import prisma from "../config/database.js";
 import { v4 as uuidv4 } from "uuid";
 
-/**
- * Setup transaction PIN
- */
+
 export const setupPin = async (req, res) => {
   try {
     const { pin, password } = req.body;
@@ -23,7 +21,7 @@ export const setupPin = async (req, res) => {
       });
     }
 
-    // Hash PIN
+   
     const hashedPin = await bcrypt.hash(pin, 10);
 
     // Update user PIN
@@ -50,9 +48,7 @@ export const setupPin = async (req, res) => {
   }
 };
 
-/**
- * Change transaction PIN
- */
+
 export const changePin = async (req, res) => {
   try {
     const { oldPin, newPin } = req.body;
@@ -106,7 +102,7 @@ export const changePin = async (req, res) => {
       });
     }
 
-    // Hash new PIN
+ 
     const hashedPin = await bcrypt.hash(newPin, 10);
 
     // Update PIN
@@ -133,9 +129,6 @@ export const changePin = async (req, res) => {
   }
 };
 
-/**
- * Verify transaction PIN
- */
 export const verifyPin = async (pin, userId) => {
   try {
     const user = await prisma.user.findUnique({
@@ -191,9 +184,7 @@ export const verifyPin = async (pin, userId) => {
   }
 };
 
-/**
- * Register device
- */
+
 export const registerDevice = async (req, res) => {
   try {
     const { deviceName, deviceType } = req.body;
@@ -229,7 +220,7 @@ export const registerDevice = async (req, res) => {
         deviceType,
         ipAddress,
         userAgent,
-        isTrusted: false, // Require manual trust
+        isTrusted: false, 
       },
     });
 
@@ -248,9 +239,7 @@ export const registerDevice = async (req, res) => {
   }
 };
 
-/**
- * Get user devices
- */
+
 export const getDevices = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -283,9 +272,7 @@ export const getDevices = async (req, res) => {
   }
 };
 
-/**
- * Trust/Untrust device
- */
+
 export const toggleDeviceTrust = async (req, res) => {
   try {
     const { deviceId } = req.params;
@@ -321,9 +308,7 @@ export const toggleDeviceTrust = async (req, res) => {
   }
 };
 
-/**
- * Remove device
- */
+
 export const removeDevice = async (req, res) => {
   try {
     const { deviceId } = req.params;
@@ -357,9 +342,7 @@ export const removeDevice = async (req, res) => {
   }
 };
 
-/**
- * Update profile
- */
+
 export const updateProfile = async (req, res) => {
   try {
     const { firstName, lastName, phone } = req.body;
