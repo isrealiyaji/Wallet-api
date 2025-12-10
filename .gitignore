@@ -8,7 +8,7 @@ coverage/
 .vscode/
 .idea/
 
-# Documentation and Marketing Files
+# My Documentation
 POSTS/
 API_EXAMPLES.md
 QUICKSTART.md
