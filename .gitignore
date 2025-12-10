@@ -7,5 +7,10 @@ build/
 coverage/
 .vscode/
 .idea/
-.API_EXAMPLE.md
-.QUICKSTART.md
+
+# Documentation and Marketing Files
+POSTS/
+API_EXAMPLES.md
+QUICKSTART.md
+SOCIAL_MEDIA_POSTS.md
+SOCIAL_MEDIA_QUICK_REF.md

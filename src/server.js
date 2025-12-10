@@ -32,7 +32,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Logging middleware
+
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 } else {
@@ -53,12 +53,12 @@ app.get("/", (req, res) => {
     success: true,
     message: "Welcome to Wallet App API",
     version: "1.0.0",
-    documentation: "/api/health",
+    documentation: "/health",
   });
 });
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
     message: "API is running",
