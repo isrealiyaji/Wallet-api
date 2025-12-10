@@ -4,20 +4,23 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import routes from "./routes/index.js";
+import authRoutes from "./routes/authRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
+import kycRoutes from "./routes/kycRoutes.js";
+import walletRoutes from "./routes/walletRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
-import "./config/database.js"; 
+import "./config/database.js";
 
-// Load environment variables
+
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 55000;
+const PORT = process.env.PORT || 5000;
 
-// Security middleware
+
 app.use(helmet());
 
-// CORS configuration
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "*",
@@ -25,7 +28,7 @@ app.use(
   })
 );
 
-// Body parser middleware
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,20 +46,31 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again later.",
 });
 
-app.use("/api/", limiter);
-
+app.use("/", limiter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "Welcome to Wallet App API",
     version: "1.0.0",
-    documentation: "/health",
+    documentation: "/api/health",
   });
 });
 
-// API routes
-app.use("/", routes);
+// Health check
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "API is running",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// API routes with /api prefix
+app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/kyc", kycRoutes);
+app.use("/api/wallet", walletRoutes);
 
 // Error handling
 app.use(notFound);
@@ -66,9 +80,7 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`
    Wallet App API Server Runnin
-    Environment: ${
-    process.env.NODE_ENV?.padEnd(24) || "development".padEnd(24)
-  }
+    Environment: ${process.env.NODE_ENV?.padEnd(24) || "development".padEnd(24)}
      Port: ${PORT.toString().padEnd(31)}
      URL: http://localhost:${PORT.toString().padEnd(17)}
                                           
