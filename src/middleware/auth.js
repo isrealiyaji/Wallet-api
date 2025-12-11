@@ -1,9 +1,6 @@
 import { verifyToken } from "../utils/helpers.js";
 import prisma from "../config/database.js";
 
-/**
- * Authentication middleware
- */
 export const authenticate = async (req, res, next) => {
   try {
     // Get token from header
@@ -71,9 +68,7 @@ export const authenticate = async (req, res, next) => {
   }
 };
 
-/**
- * Email verification check middleware
- */
+
 export const requireEmailVerified = (req, res, next) => {
   if (!req.user.emailVerified) {
     return res.status(403).json({
@@ -84,9 +79,7 @@ export const requireEmailVerified = (req, res, next) => {
   next();
 };
 
-/**
- * KYC level check middleware
- */
+
 export const requireKYCLevel = (minLevel) => {
   const kycHierarchy = {
     UNVERIFIED: 0,
@@ -110,15 +103,13 @@ export const requireKYCLevel = (minLevel) => {
   };
 };
 
-/**
- * Device binding middleware (optional)
- */
+
 export const checkDevice = async (req, res, next) => {
   try {
     const deviceId = req.headers["x-device-id"];
 
     if (!deviceId) {
-      return next(); // Optional, so we continue if not provided
+      return next(); 
     }
 
     // Check if device is registered and trusted
@@ -142,7 +133,7 @@ export const checkDevice = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("Device check error:", error);
-    next(); // Continue even if device check fails
+    next(); 
   }
 };
 
