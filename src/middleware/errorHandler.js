@@ -1,6 +1,4 @@
-/**
- * Error handling middleware
- */
+
 export const errorHandler = (err, req, res, next) => {
   console.error("Error:", err);
 
@@ -20,7 +18,7 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // JWT errors
+ 
   if (err.name === "JsonWebTokenError") {
     return res.status(401).json({
       success: false,
@@ -46,9 +44,7 @@ export const errorHandler = (err, req, res, next) => {
   });
 };
 
-/**
- * Not found middleware
- */
+
 export const notFound = (req, res) => {
   res.status(404).json({
     success: false,
