@@ -1,8 +1,6 @@
 import { body } from "express-validator";
 
-/**
- * Registration validation rules
- */
+
 export const registerValidation = [
   body("email")
     .isEmail()
@@ -31,17 +29,13 @@ export const registerValidation = [
     .withMessage("Last name must be at least 2 characters"),
 ];
 
-/**
- * Login validation rules
- */
+
 export const loginValidation = [
   body("emailOrPhone").notEmpty().withMessage("Email or phone is required"),
   body("password").notEmpty().withMessage("Password is required"),
 ];
 
-/**
- * OTP verification validation
- */
+
 export const verifyOTPValidation = [
   body("otp")
     .isLength({ min: 6, max: 6 })
@@ -50,9 +44,7 @@ export const verifyOTPValidation = [
     .withMessage("OTP must contain only numbers"),
 ];
 
-/**
- * Reset password validation
- */
+
 export const resetPasswordValidation = [
   body("email").isEmail().withMessage("Valid email is required"),
   body("otp").isLength({ min: 6, max: 6 }).withMessage("OTP must be 6 digits"),
@@ -63,9 +55,7 @@ export const resetPasswordValidation = [
     .withMessage("Password must contain uppercase, lowercase, and number"),
 ];
 
-/**
- * PIN validation
- */
+
 export const pinValidation = [
   body("pin")
     .isLength({ min: 4, max: 4 })
@@ -74,17 +64,13 @@ export const pinValidation = [
     .withMessage("PIN must contain only numbers"),
 ];
 
-/**
- * Setup PIN validation
- */
+
 export const setupPinValidation = [
   ...pinValidation,
   body("password").notEmpty().withMessage("Password is required"),
 ];
 
-/**
- * Change PIN validation
- */
+
 export const changePinValidation = [
   body("oldPin")
     .isLength({ min: 4, max: 4 })
@@ -96,9 +82,7 @@ export const changePinValidation = [
     .withMessage("New PIN must contain only numbers"),
 ];
 
-/**
- * KYC Tier 1 validation
- */
+
 export const tier1KYCValidation = [
   body("bvn")
     .isLength({ min: 11, max: 11 })
@@ -115,9 +99,7 @@ export const tier1KYCValidation = [
     .withMessage("Address must be at least 10 characters"),
 ];
 
-/**
- * KYC Tier 2 validation
- */
+
 export const tier2KYCValidation = [
   body("idType")
     .isIn(["NIN", "DRIVERS_LICENSE", "VOTERS_CARD", "INTERNATIONAL_PASSPORT"])
@@ -126,9 +108,7 @@ export const tier2KYCValidation = [
   body("idImageUrl").isURL().withMessage("Valid ID image URL is required"),
 ];
 
-/**
- * KYC Tier 3 validation
- */
+
 export const tier3KYCValidation = [
   body("utilityBillUrl")
     .isURL()
@@ -136,18 +116,14 @@ export const tier3KYCValidation = [
   body("selfieUrl").isURL().withMessage("Valid selfie URL is required"),
 ];
 
-/**
- * Fund wallet validation
- */
+
 export const fundWalletValidation = [
   body("amount")
     .isFloat({ min: 100 })
     .withMessage("Amount must be at least ₦100"),
 ];
 
-/**
- * Wallet transfer validation
- */
+
 export const walletTransferValidation = [
   body("recipientAccountNumber")
     .isLength({ min: 10, max: 10 })
@@ -164,9 +140,7 @@ export const walletTransferValidation = [
     .withMessage("Description must not exceed 200 characters"),
 ];
 
-/**
- * Withdraw to bank validation
- */
+
 export const withdrawValidation = [
   body("amount")
     .isFloat({ min: 100 })

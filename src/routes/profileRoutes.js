@@ -9,13 +9,13 @@ import {
 
 const router = express.Router();
 
-// All routes require authentication
+
 router.use(authenticate);
 
-// Profile routes
+
 router.put("/update", profileController.updateProfile);
 
-// PIN routes
+
 router.post(
   "/pin/setup",
   setupPinValidation,
@@ -29,7 +29,7 @@ router.post(
   profileController.changePin
 );
 
-// Device routes
+
 router.post("/devices/register", profileController.registerDevice);
 router.get("/devices", profileController.getDevices);
 router.patch("/devices/:deviceId/trust", profileController.toggleDeviceTrust);

@@ -11,9 +11,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-/**
- * Send email
- */
 export const sendEmail = async ({ to, subject, html, text }) => {
   try {
     const mailOptions = {
@@ -33,9 +30,7 @@ export const sendEmail = async ({ to, subject, html, text }) => {
   }
 };
 
-/**
- * Send OTP email
- */
+
 export const sendOTPEmail = async (email, otp, type = "verification") => {
   const subject =
     type === "verification"
@@ -64,9 +59,7 @@ export const sendOTPEmail = async (email, otp, type = "verification") => {
   return await sendEmail({ to: email, subject, html });
 };
 
-/**
- * Send welcome email
- */
+
 export const sendWelcomeEmail = async (email, firstName) => {
   const subject = `Welcome to ${process.env.APP_NAME || "Wallet App"}!`;
 
@@ -94,9 +87,7 @@ export const sendWelcomeEmail = async (email, firstName) => {
   return await sendEmail({ to: email, subject, html });
 };
 
-/**
- * Send transaction notification email
- */
+
 export const sendTransactionEmail = async (email, transaction) => {
   const subject = `Transaction ${transaction.status}: ${transaction.reference}`;
 

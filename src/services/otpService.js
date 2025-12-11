@@ -2,15 +2,12 @@ import prisma from "../config/database.js";
 import { generateOTP } from "../utils/helpers.js";
 import { sendOTPEmail } from "./emailService.js";
 
-/**
- * Generate and save OTP
- */
+
 export const createOTP = async (userId, type) => {
   try {
-    // Generate OTP
     const code = generateOTP(6);
 
-    // Calculate expiry time
+  
     const expiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES) || 10;
     const expiresAt = new Date(Date.now() + expiryMinutes * 60 * 1000);
 
@@ -31,18 +28,16 @@ export const createOTP = async (userId, type) => {
   }
 };
 
-/**
- * Send OTP via email
- */
+
 export const sendOTP = async (userId, email, type) => {
   try {
-    // Create OTP
+   
     const otpResult = await createOTP(userId, type);
     if (!otpResult.success) {
       return { success: false, error: "Failed to generate OTP" };
     }
 
-    // Send OTP email
+    
     await sendOTPEmail(email, otpResult.code, type);
 
     return {
@@ -56,9 +51,7 @@ export const sendOTP = async (userId, email, type) => {
   }
 };
 
-/**
- * Verify OTP
- */
+
 export const verifyOTP = async (userId, code, type) => {
   try {
     // Find the most recent OTP
@@ -78,12 +71,11 @@ export const verifyOTP = async (userId, code, type) => {
       return { success: false, error: "Invalid OTP code" };
     }
 
-    // Check if OTP has expired
     if (new Date() > otp.expiresAt) {
       return { success: false, error: "OTP has expired" };
     }
 
-    // Check attempt limit
+    
     if (otp.attempts >= 5) {
       return {
         success: false,
@@ -107,9 +99,7 @@ export const verifyOTP = async (userId, code, type) => {
   }
 };
 
-/**
- * Delete expired OTPs (cleanup function)
- */
+
 export const cleanupExpiredOTPs = async () => {
   try {
     const result = await prisma.oTP.deleteMany({

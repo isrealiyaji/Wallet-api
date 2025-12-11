@@ -10,16 +10,16 @@ import {
 
 const router = express.Router();
 
-// All routes require authentication and email verification
+
 router.use(authenticate);
 router.use(requireEmailVerified);
 
-// Wallet routes
+
 router.get("/", walletController.getWallet);
 
-// Funding routes
+
 router.post(
-  "/fund/bank-transfer",
+  "/fund/banktransfer",
   fundWalletValidation,
   validate,
   walletController.fundViaBankTransfer
@@ -31,7 +31,7 @@ router.post(
   walletController.fundViaCard
 );
 
-// Transaction routes
+
 router.post(
   "/transfer",
   walletTransferValidation,

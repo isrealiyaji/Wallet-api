@@ -39,10 +39,10 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("combined"));
 }
 
-// Rate limiting
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 100, 
   message: "Too many requests from this IP, please try again later.",
 });
 
@@ -57,7 +57,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check
+
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -66,17 +66,17 @@ app.get("/health", (req, res) => {
   });
 });
 
-// API routes with /api prefix
+
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/kyc", kycRoutes);
 app.use("/api/wallet", walletRoutes);
 
-// Error handling
+
 app.use(notFound);
 app.use(errorHandler);
 
-// Start serve
+
 app.listen(PORT, () => {
   console.log(`
    Wallet App API Server Runnin
@@ -90,14 +90,13 @@ app.listen(PORT, () => {
   `);
 });
 
-// Handle unhandled promise rejections
+
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Promise Rejection:", err);
-  // Close server & exit process
   process.exit(1);
 });
 
-// Handle uncaught exceptions
+
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
   process.exit(1);

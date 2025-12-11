@@ -1,8 +1,6 @@
 import jwt from "jsonwebtoken";
 
-/**
- * Generate JWT token
- */
+
 export const generateToken = (
   payload,
   expiresIn = process.env.JWT_EXPIRE || "7d"
@@ -10,9 +8,7 @@ export const generateToken = (
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
 };
 
-/**
- * Verify JWT token
- */
+
 export const verifyToken = (token) => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
@@ -21,27 +17,21 @@ export const verifyToken = (token) => {
   }
 };
 
-/**
- * Generate OTP code
- */
+
 export const generateOTP = (length = 6) => {
   return Math.floor(Math.random() * Math.pow(10, length))
     .toString()
     .padStart(length, "0");
 };
 
-/**
- * Generate unique transaction reference
- */
+
 export const generateTransactionReference = () => {
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 10000);
   return `TXN${timestamp}${random}`;
 };
 
-/**
- * Generate unique account number
- */
+
 export const generateAccountNumber = () => {
   return (
     "20" +
@@ -51,9 +41,7 @@ export const generateAccountNumber = () => {
   );
 };
 
-/**
- * Calculate transaction fee
- */
+
 export const calculateTransactionFee = (amount, category) => {
   // Define fee structure
   const feeStructure = {
@@ -67,9 +55,7 @@ export const calculateTransactionFee = (amount, category) => {
   return feeStructure[category] || 0;
 };
 
-/**
- * Get KYC transaction limits
- */
+
 export const getKYCTransactionLimits = (kycLevel) => {
   const limits = {
     UNVERIFIED: {
@@ -93,9 +79,7 @@ export const getKYCTransactionLimits = (kycLevel) => {
   return limits[kycLevel] || limits.UNVERIFIED;
 };
 
-/**
- * Format currency
- */
+ 
 export const formatCurrency = (amount, currency = "NGN") => {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -103,9 +87,7 @@ export const formatCurrency = (amount, currency = "NGN") => {
   }).format(amount);
 };
 
-/**
- * Mask sensitive data
- */
+
 export const maskEmail = (email) => {
   const [name, domain] = email.split("@");
   return `${name.substring(0, 2)}***@${domain}`;
@@ -115,23 +97,17 @@ export const maskPhone = (phone) => {
   return phone.substring(0, 4) + "****" + phone.substring(phone.length - 2);
 };
 
-/**
- * Validate email format
- */
+
 export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-/**
- * Validate phone format (Nigerian)
- */
+
 export const isValidPhone = (phone) => {
   const phoneRegex = /^(\+234|0)[789]\d{9}$/;
   return phoneRegex.test(phone);
 };
 
-/**
- * Sleep utility for delays
- */
+
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
