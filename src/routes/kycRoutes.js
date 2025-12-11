@@ -10,11 +10,11 @@ import {
 
 const router = express.Router();
 
-// All routes require authentication and email verification
+
 router.use(authenticate);
 router.use(requireEmailVerified);
 
-// KYC routes
+
 router.get("/status", kycController.getKYCStatus);
 router.post(
   "/tier1",
@@ -35,7 +35,7 @@ router.post(
   kycController.submitTier3KYC
 );
 
-// Admin routes (simplified - in production, add admin authentication)
+
 router.post("/approve", kycController.approveKYC);
 router.post("/reject", kycController.rejectKYC);
 
