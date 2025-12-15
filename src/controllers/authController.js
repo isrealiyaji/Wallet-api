@@ -24,7 +24,7 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user and wallet in a transaction
+    // Create user and wallet in a transactio
     const user = await prisma.$transaction(async (tx) => {
       // Create user
       const newUser = await tx.user.create({
