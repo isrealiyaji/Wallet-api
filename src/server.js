@@ -11,7 +11,6 @@ import walletRoutes from "./routes/walletRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import "./config/database.js";
 
-
 dotenv.config();
 
 const app = express();
@@ -26,10 +25,8 @@ app.use(
   })
 );
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -37,24 +34,22 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("combined"));
 }
 
-
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
 
 app.use("/", limiter);
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Welcome to Wallet App API",
-    version: "1.0.0",
-    documentation: "/health",
-  });
-});
-
+// app.get("/", (req, res) => {
+//   res.status(200).json({
+//     success: true,
+//     message: "Welcome to Wallet App API",
+//     version: "1.0.0",
+//     documentation: "/health",
+//   });
+// });
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -64,16 +59,13 @@ app.get("/health", (req, res) => {
   });
 });
 
-
-app.use("/api/auth", authRoutes);
-app.use("/api/profile", profileRoutes);
-app.use("/api/kyc", kycRoutes);
-app.use("/api/wallet", walletRoutes);
-
+app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
+app.use("/kyc", kycRoutes);
+app.use("/wallet", walletRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
-
 
 app.listen(PORT, () => {
   console.log(`
@@ -88,12 +80,10 @@ app.listen(PORT, () => {
   `);
 });
 
-
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Promise Rejection:", err);
   process.exit(1);
 });
-
 
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
