@@ -26,7 +26,7 @@ router.post(
 router.use(authenticate);
 router.get("/me", authController.getCurrentUser);
 router.post(
-  "/verify-email",
+  "/verifyemail",
   verifyOTPValidation,
   validate,
   authController.verifyEmail
