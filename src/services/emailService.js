@@ -30,16 +30,36 @@ export const sendEmail = async ({ to, subject, html, text }) => {
   }
 };
 
+export const sendOTPEmail = async (email, otp, type = "EMAIL_VERIFICATION") => {
+  // Determine subject based on OTP type
+  let subject = "OTP Code";
+  let purpose = "verification";
 
-export const sendOTPEmail = async (email, otp, type = "verification") => {
-  const subject =
-    type === "verification"
-      ? "Verify Your Email - OTP Code"
-      : "Password Reset - OTP Code";
+  switch (type) {
+    case "EMAIL_VERIFICATION":
+      subject = "Verify Your Email - OTP Code";
+      purpose = "email verification";
+      break;
+    case "PHONE_VERIFICATION":
+      subject = "Verify Your Phone - OTP Code";
+      purpose = "phone verification";
+      break;
+    case "PASSWORD_RESET":
+      subject = "Password Reset - OTP Code";
+      purpose = "password reset";
+      break;
+    case "TRANSACTION_PIN":
+      subject = "Transaction PIN Reset - OTP Code";
+      purpose = "PIN reset";
+      break;
+    default:
+      subject = "OTP Verification Code";
+      purpose = "verification";
+  }
 
   const html = `
     <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #333;">Your OTP Code</h2>
+      <h2 style="color: #333;">Your OTP Code for ${purpose}</h2>
       <p>Hello,</p>
       <p>Your OTP code is:</p>
       <h1 style="background-color: #f4f4f4; padding: 20px; text-align: center; letter-spacing: 5px; color: #333;">
@@ -58,7 +78,6 @@ export const sendOTPEmail = async (email, otp, type = "verification") => {
 
   return await sendEmail({ to: email, subject, html });
 };
-
 
 export const sendWelcomeEmail = async (email, firstName) => {
   const subject = `Welcome to ${process.env.APP_NAME || "Wallet App"}!`;
@@ -86,7 +105,6 @@ export const sendWelcomeEmail = async (email, firstName) => {
 
   return await sendEmail({ to: email, subject, html });
 };
-
 
 export const sendTransactionEmail = async (email, transaction) => {
   const subject = `Transaction ${transaction.status}: ${transaction.reference}`;
