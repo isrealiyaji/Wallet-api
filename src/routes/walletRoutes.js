@@ -45,7 +45,7 @@ router.post(
   walletController.withdrawToBank
 );
 
-// Transaction history
+
 router.get("/transactions", walletController.getTransactions);
 router.get(
   "/transactions/:reference",
