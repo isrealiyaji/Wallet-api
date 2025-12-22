@@ -31,6 +31,6 @@ router.post(
   validate,
   authController.verifyEmail
 );
-router.post("/resendotp", authController.resendOTP);
+router.post("/resend-otp", authController.resendOTP);
 
 export default router;
