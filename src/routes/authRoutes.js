@@ -22,7 +22,7 @@ router.post(
   authController.resetPassword
 );
 
-// Protected rout
+// Protected routee
 router.use(authenticate);
 router.get("/me", authController.getCurrentUser);
 router.post(
