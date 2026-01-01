@@ -1,8 +1,3 @@
-/**
- * Transaction Limit Validation Middleware
- * Validates transaction amounts against tier-based limits
- */
-
 import prisma from "../config/database.js";
 
 /**
@@ -10,26 +5,27 @@ import prisma from "../config/database.js";
  */
 const TIER_LIMITS = {
   UNVERIFIED: {
+    accountBalance: 0,
     dailyLimit: 0,
     singleTransaction: 0,
   },
   TIER1: {
-    dailyLimit: parseFloat(process.env.TIER1_DAILY_LIMIT || 50000),
-    singleTransaction: parseFloat(process.env.TIER1_DAILY_LIMIT || 50000) / 2,
+    accountBalance: 300000,
+    dailyLimit: 50000,
+    singleTransaction: 25000,
   },
   TIER2: {
-    dailyLimit: parseFloat(process.env.TIER2_DAILY_LIMIT || 200000),
-    singleTransaction: parseFloat(process.env.TIER2_DAILY_LIMIT || 200000) / 2,
+    accountBalance: 500000,
+    dailyLimit: 300000,
+    singleTransaction: 100000,
   },
   TIER3: {
-    dailyLimit: parseFloat(process.env.TIER3_DAILY_LIMIT || 1000000),
-    singleTransaction: parseFloat(process.env.TIER3_DAILY_LIMIT || 1000000) / 2,
+    accountBalance: null, // unlimited
+    dailyLimit: 5000000,
+    singleTransaction: 3000000,
   },
 };
 
-/**
- * Validate single transaction amount
- */
 export const validateTransactionAmount = (req, res, next) => {
   const amount = parseFloat(req.body.amount);
   const userTier = req.user.kycLevel;
@@ -55,9 +51,6 @@ export const validateTransactionAmount = (req, res, next) => {
   next();
 };
 
-/**
- * Check daily transaction limit
- */
 export const checkDailyLimit = async (req, res, next) => {
   try {
     const amount = parseFloat(req.body.amount);
@@ -113,6 +106,62 @@ export const checkDailyLimit = async (req, res, next) => {
     res.status(500).json({
       success: false,
       message: "Failed to verify transaction limits",
+    });
+  }
+};
+
+/**
+ * Check account balance limit
+ */
+export const checkAccountBalanceLimit = async (req, res, next) => {
+  try {
+    const userTier = req.user.kycLevel;
+    const limits = TIER_LIMITS[userTier];
+
+    if (!limits) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid KYC tier",
+      });
+    }
+
+    // TIER3 has unlimited balance
+    if (limits.accountBalance === null) {
+      return next();
+    }
+
+    // Get user's wallet balance
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId: req.user.id },
+      select: { balance: true },
+    });
+
+    if (!wallet) {
+      return res.status(400).json({
+        success: false,
+        message: "Wallet not found",
+      });
+    }
+
+    const currentBalance = parseFloat(wallet.balance);
+
+    if (currentBalance >= limits.accountBalance) {
+      return res.status(400).json({
+        success: false,
+        message: `Account balance limit of ₦${limits.accountBalance.toLocaleString()} reached for ${userTier}`,
+        accountBalanceLimit: limits.accountBalance,
+        currentBalance: currentBalance,
+      });
+    }
+
+    req.accountBalance = currentBalance;
+    req.accountBalanceLimit = limits.accountBalance;
+    next();
+  } catch (error) {
+    console.error("Account balance check error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to verify account balance limit",
     });
   }
 };

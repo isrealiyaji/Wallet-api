@@ -8,6 +8,7 @@ import {
 import {
   validateTransactionAmount,
   checkDailyLimit,
+  checkAccountBalanceLimit,
 } from "../middleware/transactionLimits.js";
 import validate from "../middleware/validate.js";
 import {
@@ -28,6 +29,7 @@ router.post(
   requireKYCLevel("TIER1"),
   fundWalletValidation,
   validate,
+  checkAccountBalanceLimit,
   walletController.fundViaBankTransfer
 );
 router.post(
@@ -35,6 +37,7 @@ router.post(
   requireKYCLevel("TIER1"),
   fundWalletValidation,
   validate,
+  checkAccountBalanceLimit,
   walletController.fundViaCard
 );
 
