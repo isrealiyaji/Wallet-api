@@ -1,6 +1,10 @@
 import express from "express";
 import walletController from "../controllers/walletController.js";
-import { authenticate, requireEmailVerified } from "../middleware/auth.js";
+import {
+  authenticate,
+  requireEmailVerified,
+  requireKYCLevel,
+} from "../middleware/auth.js";
 import validate from "../middleware/validate.js";
 import {
   fundWalletValidation,
@@ -10,41 +14,40 @@ import {
 
 const router = express.Router();
 
-
 router.use(authenticate);
 router.use(requireEmailVerified);
 
-
 router.get("/", walletController.getWallet);
-
 
 router.post(
   "/fund/banktransfer",
+  requireKYCLevel("TIER1"),
   fundWalletValidation,
   validate,
   walletController.fundViaBankTransfer
 );
 router.post(
   "/fund/card",
+  requireKYCLevel("TIER1"),
   fundWalletValidation,
   validate,
   walletController.fundViaCard
 );
 
-
 router.post(
   "/transfer",
+  requireKYCLevel("TIER1"),
   walletTransferValidation,
   validate,
   walletController.walletTransfer
 );
 router.post(
   "/withdraw",
+  requireKYCLevel("TIER2"),
   withdrawValidation,
   validate,
   walletController.withdrawToBank
 );
-
 
 router.get("/transactions", walletController.getTransactions);
 router.get(
