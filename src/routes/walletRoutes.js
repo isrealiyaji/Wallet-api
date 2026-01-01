@@ -5,6 +5,10 @@ import {
   requireEmailVerified,
   requireKYCLevel,
 } from "../middleware/auth.js";
+import {
+  validateTransactionAmount,
+  checkDailyLimit,
+} from "../middleware/transactionLimits.js";
 import validate from "../middleware/validate.js";
 import {
   fundWalletValidation,
@@ -39,6 +43,8 @@ router.post(
   requireKYCLevel("TIER1"),
   walletTransferValidation,
   validate,
+  validateTransactionAmount,
+  checkDailyLimit,
   walletController.walletTransfer
 );
 router.post(
@@ -46,6 +52,8 @@ router.post(
   requireKYCLevel("TIER2"),
   withdrawValidation,
   validate,
+  validateTransactionAmount,
+  checkDailyLimit,
   walletController.withdrawToBank
 );
 
