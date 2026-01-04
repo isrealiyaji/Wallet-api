@@ -33,9 +33,8 @@ A comprehensive, production-ready digital wallet backend application built with 
 
 The API implements **database-level transaction locking** to prevent race conditions, **role-based access control** through KYC tiers, and comprehensive **regulatory compliance** features suitable for fintech applications.
 
----
 
-## ✨ Key Features
+ ✨ Key Features
 
 ### 👤 User Management
 
