@@ -1,8 +1,8 @@
-# 💳 Wallet App API
+Wallet App API
 
 A comprehensive, production-ready digital wallet backend application built with **Node.js**, **Express**, and **PostgreSQL**. Designed with financial security, regulatory compliance, and user experience at its core.
 
-## 📋 Table of Contents
+Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
@@ -17,9 +17,8 @@ A comprehensive, production-ready digital wallet backend application built with 
 - [Contributing](#contributing)
 - [License](#license)
 
----
 
-## 🎯 Overview
+Overview
 
 **Wallet App API** is a secure, scalable digital wallet platform that enables users to:
 
@@ -33,16 +32,15 @@ A comprehensive, production-ready digital wallet backend application built with 
 
 The API implements **database-level transaction locking** to prevent race conditions, **role-based access control** through KYC tiers, and comprehensive **regulatory compliance** features suitable for fintech applications.
 
+Key Features
 
- ✨ Key Features
+**User Management**
 
-### 👤 User Management
-
-- ✅ **Email & Phone Registration** - Multiple verification methods
-- ✅ **OTP Verification** - Email-based OTP for account verification
-- ✅ **Secure Authentication** - JWT-based token system with password hashing (bcrypt)
-- ✅ **Account Status Management** - ACTIVE, SUSPENDED, INACTIVE states
-- ✅ **Password Reset** - Secure password recovery via OTP
+- **Email & Phone Registration** - Multiple verification methods
+- **OTP Verification** - Email-based OTP for account verification
+- **Secure Authentication** - JWT-based token system with password hashing (bcrypt)
+- **Account Status Management** - ACTIVE, SUSPENDED, INACTIVE states
+- **Password Reset** - Secure password recovery via OTP
 
 ### 💰 Wallet Operations
 
