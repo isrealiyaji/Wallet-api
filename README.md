@@ -42,7 +42,7 @@ Key Features
 - **Account Status Management** - ACTIVE, SUSPENDED, INACTIVE states
 - **Password Reset** - Secure password recovery via OTP
 
-### 💰 Wallet Operations
+### Wallet Operations
 
 - ✅ **Fund Wallet** - Bank transfer and card payment methods
 - ✅ **Peer-to-Peer Transfers** - Send money to other wallet users
@@ -50,7 +50,7 @@ Key Features
 - ✅ **Transaction History** - Detailed transaction logs with pagination
 - ✅ **Wallet Balance Management** - Real-time balance tracking
 
-### 🔐 Security & Compliance
+### Security & Compliance
 
 - ✅ **Transaction PIN** - Additional layer of security for sensitive operations
 - ✅ **Device Management** - Track trusted and untrusted devices
@@ -58,7 +58,7 @@ Key Features
 - ✅ **Rate Limiting** - 100 requests per 15 minutes per user
 - ✅ **Input Validation** - Comprehensive validation on all endpoints
 
-### 📋 KYC (Know Your Customer)
+### KYC (Know Your Customer)
 
 - ✅ **3-Tier KYC System** - Progressive identity verification
   - **TIER1**: Basic verification (email/phone) - Transfers up to ₦50,000 daily
@@ -68,14 +68,14 @@ Key Features
 - ✅ **Approval Workflow** - Admin approval/rejection with feedback
 - ✅ **Transaction Limits** - Tier-based daily, monthly, and per-transaction limits
 
-### 💾 Data Integrity
+### Data Integrity
 
 - ✅ **Database Transactions** - Serializable isolation level
 - ✅ **Row-Level Locking** - Prevents concurrent modification issues
 - ✅ **Balance Consistency** - Atomic balance updates
 - ✅ **Audit Trail** - Complete transaction history
 
-### 📧 Notifications
+### Notifications
 
 - ✅ **Email Notifications** - Transaction alerts and confirmations
 - ✅ **OTP Email** - Verification codes and password reset
@@ -124,7 +124,7 @@ Key Features
 
 ---
 
-## 📚 API Documentation
+## API Documentation
 
 ### Swagger Documentation
 
@@ -183,7 +183,7 @@ Alternatively, use the REST Client examples in `API_EXAMPLES.md` for VS Code RES
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -258,7 +258,7 @@ The API will be available at `http://localhost:5000`
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 wallet-app-api/
@@ -298,7 +298,7 @@ wallet-app-api/
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 | Variable             | Required | Default     | Description                          |
 | -------------------- | -------- | ----------- | ------------------------------------ |
@@ -319,7 +319,7 @@ wallet-app-api/
 
 ---
 
-## 🔐 Security Features
+## Security Features
 
 ### Authentication
 
@@ -352,7 +352,7 @@ wallet-app-api/
 
 ---
 
-## 💰 KYC & Transaction Limits
+##  KYC & Transaction Limits
 
 ### TIER1 (Basic Verification)
 
@@ -380,7 +380,7 @@ wallet-app-api/
 
 ---
 
-## 📊 API Statistics
+##  API Statistics
 
 - **28+ Endpoints** - Comprehensive API coverage
 - **7 Database Models** - User, Wallet, Transaction, KYC, OTP, Device, etc.
@@ -391,7 +391,7 @@ wallet-app-api/
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 ### Using REST Client (VS Code)
 
@@ -429,7 +429,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 
 ---
 
-## 🚢 Deployment
+##  Deployment
 
 ### Prerequisites
 
@@ -457,7 +457,7 @@ git push heroku main
 
 ---
 
-## 📝 API Examples
+##  API Examples
 
 See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
@@ -467,7 +467,7 @@ See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -496,7 +496,7 @@ See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
 ---
 
-## 📧 Email Configuration (Gmail)
+##  Email Configuration (Gmail)
 
 1. Enable 2-Factor Authentication on Google Account
 2. Create App Password at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
@@ -508,7 +508,7 @@ See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/AmazingFeature`)
@@ -518,13 +518,13 @@ See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-## 👨‍💼 Author
+##  Author
 
 **Isreal Iyaji**
 
