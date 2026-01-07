@@ -534,7 +534,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Express.js community
 - Prisma team for amazing ORM
@@ -544,7 +544,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-## 📞 Support
+## Support
 
 For issues, questions, or suggestions:
 
