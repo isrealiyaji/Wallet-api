@@ -496,7 +496,7 @@ See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
 ---
 
-##  Email Configuration (Gmail)
+## Email Configuration (Gmail)
 
 1. Enable 2-Factor Authentication on Google Account
 2. Create App Password at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
@@ -508,7 +508,7 @@ See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
 ---
 
-##  Contributing
+## Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/AmazingFeature`)
@@ -518,7 +518,7 @@ See [API_EXAMPLES.md](./API_EXAMPLES.md) for detailed examples using:
 
 ---
 
-##  License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
@@ -529,8 +529,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 **Isreal Iyaji**
 
 - GitHub: [@isrealiyaji](https://github.com/isrealiyaji)
-- Portfolio: [Your Portfolio URL]
-- Email: [Your Email]
+- Email: isrealiyaji1@gmail.com
 
 ---
 
@@ -543,15 +542,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - The open-source community
 
 ---
-
-## Support
-
-For issues, questions, or suggestions:
-
-1. Open an issue on GitHub
-2. Create a discussion
-3. Contact the author
-
----
-
-**Happy coding! 🚀**
