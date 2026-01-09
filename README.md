@@ -196,7 +196,7 @@ Alternatively, use the REST Client examples in `API_EXAMPLES.md` for VS Code RES
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/isrealiyaji/Wallet-api.git
+git clone https://github.com/isrealiyaji/Wallet-api
 cd Wallet-api
 ```
 
