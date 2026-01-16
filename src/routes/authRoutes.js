@@ -31,6 +31,8 @@ router.post(
   validate,
   authController.verifyEmail
 );
+router.post("/verifyphone", verifyOTPValidation, validate, authController.verifyPhone);
+router.post("/phone-verification", validate, authController.requestPhoneVerification);
 router.post("/resend-otp", authController.resendOTP);
 
 export default router;

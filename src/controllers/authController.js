@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs";
 import prisma from "../config/database.js";
 import { generateToken, generateAccountNumber } from "../utils/helpers.js";
-import { sendOTP, verifyOTP } from "../services/otpService.js";
+import { sendOTP, sendOTPPhone, verifyOTP } from "../services/otpService.js";
 import { sendWelcomeEmail } from "../services/emailService.js";
+import { VerificationTypes } from "../enums/verificationTypes.js";
 
 
 export const register = async (req, res) => {
@@ -59,7 +60,7 @@ export const register = async (req, res) => {
     });
 
  
-    await sendOTP(user.id, user.email, "EMAIL_VERIFICATION");
+    await sendOTP(user.id, user.email, VerificationTypes.EMAIL_VERIFICATION);
 
    
     sendWelcomeEmail(user.email, user.firstName).catch(console.error);
@@ -184,6 +185,77 @@ export const verifyEmail = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Email verification failed",
+      error: error.message,
+    });
+  }
+};
+
+export const requestPhoneVerification = async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const userId = req.user.id;
+
+    //Verify user number
+    if(phone !== req.user.phone){
+      return res.status(400).json({
+        success: false,
+        message: "Invalid phone number",
+      });
+    }
+
+    //Send OTP to user
+    const result = await sendOTPPhone(userId, phone, VerificationTypes.PHONE_VERIFICATION);
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.error,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Phone verification sent successfully",
+    });
+  } catch (error) {
+    console.error("Phone verification error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Phone verification failed",
+      error: error.message,
+    });
+  }
+};
+
+export const verifyPhone = async (req, res) => {
+  try {
+    const { otp } = req.body;
+    const userId = req.user.id;
+
+    
+    const result = await verifyOTP(userId, otp, VerificationTypes.PHONE_VERIFICATION);
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.error,
+      });
+    }
+
+    // Update user phone verification status
+    await prisma.user.update({
+      where: { id: userId },
+      data: { phoneVerified: true },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Phone number verified successfully",
+    });
+  } catch (error) {
+    console.error("Phone verification error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Phone verification failed",
       error: error.message,
     });
   }
@@ -345,6 +417,12 @@ export const getCurrentUser = async (req, res) => {
   }
 };
 
+/**
+ * 1. Request Phone OTP
+ * 2. Verify Phone OTP
+ * 
+ */
+
 export default {
   register,
   login,
@@ -353,4 +431,6 @@ export default {
   forgotPassword,
   resetPassword,
   getCurrentUser,
+  requestPhoneVerification,
+  verifyPhone,
 };

@@ -211,3 +211,19 @@ model Device {
   @@index([userId])
   @@index([deviceId])
 }
+
+model Ledger {
+  id              String    @id @default(uuid())
+  transactionId   String    // Reference to the transaction
+  entryType       String    // DEBIT or CREDIT
+  accountId       String    // The account being affected (could be wallet ID or system account)
+  amount          Decimal   @db.Decimal(19, 4)
+  reference       String    // Transaction reference
+  balance         Decimal?  @db.Decimal(19, 4) // Running balance after this entry
+  createdAt       DateTime  @default(now())
+  
+  @@index([transactionId])
+  @@index([accountId])
+  @@index([reference])
+  @@index([createdAt])
+}
