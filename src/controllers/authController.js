@@ -5,7 +5,6 @@ import { sendOTP, sendOTPPhone, verifyOTP } from "../services/otpService.js";
 import { sendWelcomeEmail } from "../services/emailService.js";
 import { VerificationTypes } from "../enums/verificationTypes.js";
 
-
 export const register = async (req, res) => {
   try {
     const { email, phone, password, firstName, lastName } = req.body;
@@ -59,13 +58,10 @@ export const register = async (req, res) => {
       return newUser;
     });
 
- 
     await sendOTP(user.id, user.email, VerificationTypes.EMAIL_VERIFICATION);
 
-   
     sendWelcomeEmail(user.email, user.firstName).catch(console.error);
 
-    
     const token = generateToken({ userId: user.id });
 
     res.status(201).json({
@@ -86,7 +82,6 @@ export const register = async (req, res) => {
     });
   }
 };
-
 
 export const login = async (req, res) => {
   try {
@@ -122,7 +117,6 @@ export const login = async (req, res) => {
       });
     }
 
- 
     if (user.status !== "ACTIVE") {
       return res.status(403).json({
         success: false,
@@ -133,7 +127,6 @@ export const login = async (req, res) => {
     // Generate token
     const token = generateToken({ userId: user.id });
 
-   
     delete user.password;
 
     res.status(200).json({
@@ -154,13 +147,11 @@ export const login = async (req, res) => {
   }
 };
 
-
 export const verifyEmail = async (req, res) => {
   try {
     const { otp } = req.body;
     const userId = req.user.id;
 
-  
     const result = await verifyOTP(userId, otp, "EMAIL_VERIFICATION");
 
     if (!result.success) {
@@ -195,16 +186,42 @@ export const requestPhoneVerification = async (req, res) => {
     const { phone } = req.body;
     const userId = req.user.id;
 
-    //Verify user number
-    if(phone !== req.user.phone){
+    // Get current user from database to get latest phone
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { phone: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.phone) {
       return res.status(400).json({
         success: false,
-        message: "Invalid phone number",
+        message: "No phone number registered on your account",
+      });
+    }
+
+    // Use user's registered phone or verify the provided phone matches
+    const phoneToVerify = phone || user.phone;
+
+    if (phoneToVerify !== user.phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number does not match your registered phone",
       });
     }
 
     //Send OTP to user
-    const result = await sendOTPPhone(userId, phone, VerificationTypes.PHONE_VERIFICATION);
+    const result = await sendOTPPhone(
+      userId,
+      phoneToVerify,
+      VerificationTypes.PHONE_VERIFICATION
+    );
 
     if (!result.success) {
       return res.status(400).json({
@@ -214,7 +231,7 @@ export const requestPhoneVerification = async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      message: "Phone verification sent successfully",
+      message: "Phone verification OTP sent successfully",
     });
   } catch (error) {
     console.error("Phone verification error:", error);
@@ -231,8 +248,11 @@ export const verifyPhone = async (req, res) => {
     const { otp } = req.body;
     const userId = req.user.id;
 
-    
-    const result = await verifyOTP(userId, otp, VerificationTypes.PHONE_VERIFICATION);
+    const result = await verifyOTP(
+      userId,
+      otp,
+      VerificationTypes.PHONE_VERIFICATION
+    );
 
     if (!result.success) {
       return res.status(400).json({
@@ -261,14 +281,12 @@ export const verifyPhone = async (req, res) => {
   }
 };
 
-
 export const resendOTP = async (req, res) => {
   try {
     const { type } = req.body;
     const userId = req.user.id;
     const email = req.user.email;
 
-    
     const result = await sendOTP(userId, email, type || "EMAIL_VERIFICATION");
 
     if (!result.success) {
@@ -293,7 +311,6 @@ export const resendOTP = async (req, res) => {
   }
 };
 
-
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -310,7 +327,6 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-
     await sendOTP(user.id, user.email, "PASSWORD_RESET");
 
     res.status(200).json({
@@ -326,7 +342,6 @@ export const forgotPassword = async (req, res) => {
     });
   }
 };
-
 
 export const resetPassword = async (req, res) => {
   try {
@@ -354,7 +369,6 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-   
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update password
@@ -376,7 +390,6 @@ export const resetPassword = async (req, res) => {
     });
   }
 };
-
 
 export const getCurrentUser = async (req, res) => {
   try {
@@ -420,7 +433,7 @@ export const getCurrentUser = async (req, res) => {
 /**
  * 1. Request Phone OTP
  * 2. Verify Phone OTP
- * 
+ *
  */
 
 export default {

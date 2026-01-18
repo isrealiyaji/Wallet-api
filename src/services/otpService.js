@@ -2,11 +2,13 @@ import prisma from "../config/database.js";
 import { generateOTP } from "../utils/helpers.js";
 import { sendOTPEmail } from "./emailService.js";
 
-
 export const createOTP = async (userId, type) => {
   try {
     //TODO: Remove default OTP for production
-    const code = process.env.NODE_ENV === "development" ? process.env.DEFAULT_OTP : generateOTP(6);
+    const code =
+      process.env.NODE_ENV === "development"
+        ? process.env.DEFAULT_OTP
+        : generateOTP(6);
 
     const expiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES) || 10;
     const expiresAt = new Date(Date.now() + expiryMinutes * 60 * 1000);
@@ -28,16 +30,13 @@ export const createOTP = async (userId, type) => {
   }
 };
 
-
 export const sendOTP = async (userId, email, type) => {
   try {
-   
     const otpResult = await createOTP(userId, type);
     if (!otpResult.success) {
       return { success: false, error: "Failed to generate OTP" };
     }
 
-    
     await sendOTPEmail(email, otpResult.code, type);
 
     return {
@@ -53,15 +52,13 @@ export const sendOTP = async (userId, email, type) => {
 
 export const sendOTPPhone = async (userId, phone, type) => {
   try {
-   
     const otpResult = await createOTP(userId, type);
     if (!otpResult.success) {
       return { success: false, error: "Failed to generate OTP" };
     }
 
-    
     //TODO: Send OTP to phone via whatever service
-    if(process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "development") {
       console.log(`OTP sent to ${phone}: ${otpResult.code}`);
     }
 
@@ -75,7 +72,6 @@ export const sendOTPPhone = async (userId, phone, type) => {
     return { success: false, error: error.message };
   }
 };
-
 
 export const verifyOTP = async (userId, code, type) => {
   try {
@@ -100,7 +96,6 @@ export const verifyOTP = async (userId, code, type) => {
       return { success: false, error: "OTP has expired" };
     }
 
-    
     if (otp.attempts >= 5) {
       return {
         success: false,
@@ -124,7 +119,6 @@ export const verifyOTP = async (userId, code, type) => {
   }
 };
 
-
 export const cleanupExpiredOTPs = async () => {
   try {
     const result = await prisma.oTP.deleteMany({
@@ -143,10 +137,45 @@ export const cleanupExpiredOTPs = async () => {
   }
 };
 
+export const getPhoneVerificationCode = async (userId, type) => {
+  try {
+    // Find the most recent OTP for phone verification
+    const otp = await prisma.oTP.findFirst({
+      where: {
+        userId,
+        type,
+        verified: false,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    if (!otp) {
+      return { success: false, error: "No verification code found" };
+    }
+
+    if (new Date() > otp.expiresAt) {
+      return { success: false, error: "Verification code has expired" };
+    }
+
+    return {
+      success: true,
+      code: otp.code,
+      expiresAt: otp.expiresAt,
+      createdAt: otp.createdAt,
+    };
+  } catch (error) {
+    console.error("Error retrieving phone verification code:", error);
+    return { success: false, error: error.message };
+  }
+};
+
 export default {
   createOTP,
   sendOTP,
+  sendOTPPhone,
   verifyOTP,
+  getPhoneVerificationCode,
   cleanupExpiredOTPs,
 };
-
