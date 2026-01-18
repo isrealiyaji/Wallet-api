@@ -1,14 +1,20 @@
 import prisma from "../config/database.js";
 import { generateOTP } from "../utils/helpers.js";
 import { sendOTPEmail } from "./emailService.js";
+import { sendOTPSMS } from "./smsService.js";
 
 export const createOTP = async (userId, type) => {
   try {
     //TODO: Remove default OTP for production
-    const code =
-      process.env.NODE_ENV === "development"
-        ? process.env.DEFAULT_OTP
-        : generateOTP(6);
+    let code;
+    if (process.env.NODE_ENV === "development" && process.env.DEFAULT_OTP) {
+      code = process.env.DEFAULT_OTP;
+    } else {
+      code = generateOTP(6);
+    }
+
+    // Ensure code is a string
+    code = code.toString();
 
     const expiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES) || 10;
     const expiresAt = new Date(Date.now() + expiryMinutes * 60 * 1000);
@@ -57,9 +63,12 @@ export const sendOTPPhone = async (userId, phone, type) => {
       return { success: false, error: "Failed to generate OTP" };
     }
 
-    //TODO: Send OTP to phone via whatever service
-    if (process.env.NODE_ENV === "development") {
-      console.log(`OTP sent to ${phone}: ${otpResult.code}`);
+    // Send OTP via SMS
+    const smsResult = await sendOTPSMS(phone, otpResult.code);
+
+    if (!smsResult.success) {
+      console.error("Failed to send SMS but OTP was created:", smsResult.error);
+      // Still return success as OTP was created, but log the SMS failure
     }
 
     return {

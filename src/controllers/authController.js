@@ -216,10 +216,17 @@ export const requestPhoneVerification = async (req, res) => {
       });
     }
 
+    // Normalize phone number to international format
+    let normalizedPhone = phoneToVerify;
+    if (phoneToVerify.startsWith("0")) {
+      // Convert 08... to +2348...
+      normalizedPhone = "+234" + phoneToVerify.substring(1);
+    }
+
     //Send OTP to user
     const result = await sendOTPPhone(
       userId,
-      phoneToVerify,
+      normalizedPhone,
       VerificationTypes.PHONE_VERIFICATION
     );
 
