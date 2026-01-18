@@ -63,6 +63,11 @@ export const fundViaBankTransfer = async (req, res) => {
         throw new Error("Wallet not found");
       }
 
+      // transaction scoped advisory lock by wallet id
+      await tx.$executeRaw`
+        SELECT pg_advisory_xact_lock(1, ${wallet.id})
+      `;
+
       // Calculate new balance
       const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
 
@@ -140,6 +145,11 @@ export const fundViaCard = async (req, res) => {
       if (!wallet) {
         throw new Error("Wallet not found");
       }
+
+      // transaction scoped advisory lock by wallet id
+      await tx.$executeRaw`
+        SELECT pg_advisory_xact_lock(1, ${wallet.id})
+      `;
 
       const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
 
@@ -255,6 +265,11 @@ export const walletTransfer = async (req, res) => {
         const receiverWallet = await tx.wallet.findUnique({
           where: { id: recipientWallet.id },
         });
+        
+        // Lock wallets in order of ID to prevent deadlocks
+        const [smallerWalletId, largerWalletId] = [senderWallet.id, receiverWallet.id].sort();
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(1, ${smallerWalletId})`;
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(1, ${largerWalletId})`;
 
         // Check sender balance
         if (parseFloat(senderWallet.balance) < totalAmount) {
@@ -383,6 +398,11 @@ export const withdrawToBank = async (req, res) => {
       if (!wallet) {
         throw new Error("Wallet not found");
       }
+
+      // transaction scoped advisory lock by wallet id
+      await tx.$executeRaw`
+        SELECT pg_advisory_xact_lock(1, ${wallet.id})
+      `;
 
       if (parseFloat(wallet.balance) < totalAmount) {
         throw new Error("Insufficient balance");

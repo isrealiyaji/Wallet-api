@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { VerificationTypes } from "../enums/verificationTypes.js";
 
 // Create transporter
 const transporter = nodemailer.createTransport({
@@ -36,19 +37,19 @@ export const sendOTPEmail = async (email, otp, type = "EMAIL_VERIFICATION") => {
   let purpose = "verification";
 
   switch (type) {
-    case "EMAIL_VERIFICATION":
+    case VerificationTypes.EMAIL_VERIFICATION:
       subject = "Verify Your Email - OTP Code";
       purpose = "email verification";
       break;
-    case "PHONE_VERIFICATION":
+    case VerificationTypes.PHONE_VERIFICATION:
       subject = "Verify Your Phone - OTP Code";
       purpose = "phone verification";
       break;
-    case "PASSWORD_RESET":
+    case VerificationTypes.PASSWORD_RESET:
       subject = "Password Reset - OTP Code";
       purpose = "password reset";
       break;
-    case "TRANSACTION_PIN":
+    case VerificationTypes.TRANSACTION_PIN:
       subject = "Transaction PIN Reset - OTP Code";
       purpose = "PIN reset";
       break;

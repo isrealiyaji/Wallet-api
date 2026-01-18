@@ -79,6 +79,20 @@ export const requireEmailVerified = (req, res, next) => {
   next();
 };
 
+export const requirePhoneVerified = (req, res, next) => {
+  if(process.env.NODE_ENV === "development") {
+    //TODO: Remove any phone verification check in production
+    return next();
+  }
+  if (!req.user.phoneVerified) {
+    return res.status(403).json({
+      success: false,
+      message: "Phone verification required",
+    });
+  }
+  next();
+};
+
 
 export const requireKYCLevel = (minLevel) => {
   const kycHierarchy = {
@@ -142,4 +156,5 @@ export default {
   requireEmailVerified,
   requireKYCLevel,
   checkDevice,
+  requirePhoneVerified
 };
