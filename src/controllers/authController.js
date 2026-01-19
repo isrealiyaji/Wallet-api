@@ -255,6 +255,15 @@ export const verifyPhone = async (req, res) => {
     const { otp } = req.body;
     const userId = req.user.id;
 
+    if (!otp) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP code is required",
+      });
+    }
+
+    console.log(`Verifying OTP for user ${userId}:`, otp);
+
     const result = await verifyOTP(
       userId,
       otp,
@@ -262,6 +271,7 @@ export const verifyPhone = async (req, res) => {
     );
 
     if (!result.success) {
+      console.error("OTP verification failed:", result.error);
       return res.status(400).json({
         success: false,
         message: result.error,
