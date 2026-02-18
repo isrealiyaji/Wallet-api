@@ -111,6 +111,7 @@ model Transaction {
   type              TransactionType
   category          TransactionCategory
   status            TransactionStatus   @default(PENDING)
+  currency          String              @default("NGN")
   description       String?
   metadata          Json?
   

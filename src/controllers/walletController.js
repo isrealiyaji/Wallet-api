@@ -7,7 +7,6 @@ import {
 import { verifyPin } from "./profileController.js";
 import { sendTransactionEmail } from "../services/emailService.js";
 
-
 export const getWallet = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -42,7 +41,6 @@ export const getWallet = async (req, res) => {
     });
   }
 };
-
 
 export const fundViaBankTransfer = async (req, res) => {
   try {
@@ -90,6 +88,7 @@ export const fundViaBankTransfer = async (req, res) => {
           type: "CREDIT",
           category: "BANK_FUNDING",
           status: "SUCCESSFUL",
+          currency: wallet.currency,
           description: "Wallet funding via bank transfer",
           receiverId: userId,
           receiverWalletId: wallet.id,
@@ -170,6 +169,7 @@ export const fundViaCard = async (req, res) => {
           type: "CREDIT",
           category: "CARD_FUNDING",
           status: "SUCCESSFUL",
+          currency: wallet.currency,
           description: "Wallet funding via card",
           receiverId: userId,
           receiverWalletId: wallet.id,
@@ -265,9 +265,12 @@ export const walletTransfer = async (req, res) => {
         const receiverWallet = await tx.wallet.findUnique({
           where: { id: recipientWallet.id },
         });
-        
+
         // Lock wallets in order of ID to prevent deadlocks
-        const [smallerWalletId, largerWalletId] = [senderWallet.id, receiverWallet.id].sort();
+        const [smallerWalletId, largerWalletId] = [
+          senderWallet.id,
+          receiverWallet.id,
+        ].sort();
         await tx.$executeRaw`SELECT pg_advisory_xact_lock(1, ${smallerWalletId})`;
         await tx.$executeRaw`SELECT pg_advisory_xact_lock(1, ${largerWalletId})`;
 
@@ -309,6 +312,7 @@ export const walletTransfer = async (req, res) => {
             type: "DEBIT",
             category: "WALLET_TRANSFER",
             status: "SUCCESSFUL",
+            currency: senderWallet.currency,
             description: description || "Wallet transfer",
             senderId,
             senderWalletId: senderWallet.id,
@@ -331,13 +335,13 @@ export const walletTransfer = async (req, res) => {
       {
         isolationLevel: "Serializable", // Highest isolation level for consistency
         timeout: 10000, // 10 seconds timeout
-      }
+      },
     );
 
     // Send notification emails (async)
     sendTransactionEmail(user.email, result.transaction).catch(console.error);
     sendTransactionEmail(recipientWallet.user.email, result.transaction).catch(
-      console.error
+      console.error,
     );
 
     res.status(200).json({
@@ -428,6 +432,7 @@ export const withdrawToBank = async (req, res) => {
           type: "DEBIT",
           category: "BANK_WITHDRAWAL",
           status: "SUCCESSFUL", // In production, this would be PENDING
+          currency: wallet.currency,
           description: `Withdrawal to ${accountName}`,
           senderId: userId,
           senderWalletId: wallet.id,
@@ -500,6 +505,16 @@ export const getTransactions = async (req, res) => {
               email: true,
             },
           },
+          senderWallet: {
+            select: {
+              currency: true,
+            },
+          },
+          receiverWallet: {
+            select: {
+              currency: true,
+            },
+          },
         },
       }),
       prisma.transaction.count({ where }),
@@ -553,6 +568,16 @@ export const getTransactionByReference = async (req, res) => {
             firstName: true,
             lastName: true,
             email: true,
+          },
+        },
+        senderWallet: {
+          select: {
+            currency: true,
+          },
+        },
+        receiverWallet: {
+          select: {
+            currency: true,
           },
         },
       },
