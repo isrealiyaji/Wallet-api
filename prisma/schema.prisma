@@ -95,8 +95,9 @@ model Wallet {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
+  user                   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  senderTransactions     Transaction[] @relation("SenderWallet")
+  receiverTransactions   Transaction[] @relation("ReceiverWallet")
 
   @@index([accountNumber])
   @@index([userId])
@@ -139,7 +140,8 @@ model Transaction {
 
   sender           User?   @relation("SenderTransactions", fields: [senderId], references: [id])
   receiver         User?   @relation("ReceiverTransactions", fields: [receiverId], references: [id])
-  senderWallet     Wallet? @relation(fields: [senderWalletId], references: [id])
+  senderWallet     Wallet? @relation("SenderWallet", fields: [senderWalletId], references: [id])
+  receiverWallet   Wallet? @relation("ReceiverWallet", fields: [receiverWalletId], references: [id])
 
   @@index([reference])
   @@index([senderId])

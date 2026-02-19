@@ -1,13 +1,11 @@
 import jwt from "jsonwebtoken";
 
-
 export const generateToken = (
   payload,
-  expiresIn = process.env.JWT_EXPIRE || "7d"
+  expiresIn = process.env.JWT_EXPIRE || "7d",
 ) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
 };
-
 
 export const verifyToken = (token) => {
   try {
@@ -17,20 +15,17 @@ export const verifyToken = (token) => {
   }
 };
 
-
 export const generateOTP = (length = 6) => {
   return Math.floor(Math.random() * Math.pow(10, length))
     .toString()
     .padStart(length, "0");
 };
 
-
 export const generateTransactionReference = () => {
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 10000);
   return `TXN${timestamp}${random}`;
 };
-
 
 export const generateAccountNumber = () => {
   return (
@@ -40,7 +35,6 @@ export const generateAccountNumber = () => {
       .padStart(8, "0")
   );
 };
-
 
 export const calculateTransactionFee = (amount, category) => {
   // Define fee structure
@@ -54,7 +48,6 @@ export const calculateTransactionFee = (amount, category) => {
 
   return feeStructure[category] || 0;
 };
-
 
 export const getKYCTransactionLimits = (kycLevel) => {
   const limits = {
@@ -79,14 +72,12 @@ export const getKYCTransactionLimits = (kycLevel) => {
   return limits[kycLevel] || limits.UNVERIFIED;
 };
 
- 
 export const formatCurrency = (amount, currency = "NGN") => {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency: currency,
   }).format(amount);
 };
-
 
 export const maskEmail = (email) => {
   const [name, domain] = email.split("@");
@@ -97,17 +88,69 @@ export const maskPhone = (phone) => {
   return phone.substring(0, 4) + "****" + phone.substring(phone.length - 2);
 };
 
-
 export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
-
 
 export const isValidPhone = (phone) => {
   const phoneRegex = /^(\+234|0)[789]\d{9}$/;
   return phoneRegex.test(phone);
 };
 
+export const convertDecimalToNumber = (obj) => {
+  // Use JSON serialize/deserialize with a custom replacer to handle Decimal objects
+  return JSON.parse(
+    JSON.stringify(obj, (key, value) => {
+      // Check if it's a Decimal by looking at the string representation
+      if (
+        value !== null &&
+        typeof value === "object" &&
+        value.constructor &&
+        (value.constructor.name === "Decimal" ||
+          typeof value.toFixed === "function")
+      ) {
+        // Convert Decimal to number
+        return Number(value);
+      }
+      // Check if it's a Date
+      if (value instanceof Date) {
+        return value.toISOString();
+      }
+      return value;
+    }),
+  );
+};
 
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const formatWallet = (wallet) => {
+  if (!wallet) return null;
+  return {
+    ...wallet,
+    balance: Number(wallet.balance) || 0,
+    previousBalance: Number(wallet.previousBalance) || 0,
+  };
+};
+
+export const formatTransaction = (transaction) => {
+  if (!transaction) return null;
+  return {
+    ...transaction,
+    amount: Number(transaction.amount) || 0,
+    fee: Number(transaction.fee) || 0,
+    totalAmount: Number(transaction.totalAmount) || 0,
+    senderBalanceBefore: transaction.senderBalanceBefore
+      ? Number(transaction.senderBalanceBefore)
+      : null,
+    senderBalanceAfter: transaction.senderBalanceAfter
+      ? Number(transaction.senderBalanceAfter)
+      : null,
+    receiverBalanceBefore: transaction.receiverBalanceBefore
+      ? Number(transaction.receiverBalanceBefore)
+      : null,
+    receiverBalanceAfter: transaction.receiverBalanceAfter
+      ? Number(transaction.receiverBalanceAfter)
+      : null,
+  };
+};

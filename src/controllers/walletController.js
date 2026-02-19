@@ -3,6 +3,8 @@ import {
   generateTransactionReference,
   calculateTransactionFee,
   getKYCTransactionLimits,
+  formatWallet,
+  formatTransaction,
 } from "../utils/helpers.js";
 import { verifyPin } from "./profileController.js";
 import { sendTransactionEmail } from "../services/emailService.js";
@@ -13,12 +15,6 @@ export const getWallet = async (req, res) => {
 
     const wallet = await prisma.wallet.findUnique({
       where: { userId },
-      include: {
-        transactions: {
-          take: 10,
-          orderBy: { createdAt: "desc" },
-        },
-      },
     });
 
     if (!wallet) {
@@ -28,9 +24,37 @@ export const getWallet = async (req, res) => {
       });
     }
 
+    // Fetch recent transactions separately
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        OR: [{ senderId: userId }, { receiverId: userId }],
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: {
+        sender: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        receiver: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+    });
+
     res.status(200).json({
       success: true,
-      data: wallet,
+      data: {
+        wallet: formatWallet(wallet),
+        recentTransactions: transactions.map(formatTransaction),
+      },
     });
   } catch (error) {
     console.error("Get wallet error:", error);
@@ -110,7 +134,10 @@ export const fundViaBankTransfer = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Wallet funded successfully",
-      data: result,
+      data: {
+        wallet: formatWallet(result.wallet),
+        transaction: formatTransaction(result.transaction),
+      },
     });
   } catch (error) {
     console.error("Fund wallet error:", error);
@@ -347,7 +374,10 @@ export const walletTransfer = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Transfer successful",
-      data: result,
+      data: {
+        transaction: formatTransaction(result.transaction),
+        senderWallet: formatWallet(result.senderWallet),
+      },
     });
   } catch (error) {
     console.error("Wallet transfer error:", error);
@@ -456,7 +486,10 @@ export const withdrawToBank = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Withdrawal initiated successfully",
-      data: result,
+      data: {
+        transaction: formatTransaction(result.transaction),
+        wallet: formatWallet(result.wallet),
+      },
     });
   } catch (error) {
     console.error("Withdrawal error:", error);
@@ -523,7 +556,7 @@ export const getTransactions = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        transactions,
+        transactions: transactions.map(formatTransaction),
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
@@ -592,7 +625,7 @@ export const getTransactionByReference = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: transaction,
+      data: formatTransaction(transaction),
     });
   } catch (error) {
     console.error("Get transaction error:", error);
