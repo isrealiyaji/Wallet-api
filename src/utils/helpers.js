@@ -128,8 +128,11 @@ export const formatWallet = (wallet) => {
   if (!wallet) return null;
   return {
     ...wallet,
-    balance: Number(wallet.balance) || 0,
-    previousBalance: Number(wallet.previousBalance) || 0,
+    balance:
+      wallet.balance?.toNumber?.() ?? Number(wallet.balance?.toString() || 0),
+    previousBalance:
+      wallet.previousBalance?.toNumber?.() ??
+      Number(wallet.previousBalance?.toString() || 0),
   };
 };
 
