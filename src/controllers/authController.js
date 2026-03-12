@@ -227,7 +227,7 @@ export const requestPhoneVerification = async (req, res) => {
     const result = await sendOTPPhone(
       userId,
       normalizedPhone,
-      VerificationTypes.PHONE_VERIFICATION
+      VerificationTypes.PHONE_VERIFICATION,
     );
 
     if (!result.success) {
@@ -267,7 +267,7 @@ export const verifyPhone = async (req, res) => {
     const result = await verifyOTP(
       userId,
       otp,
-      VerificationTypes.PHONE_VERIFICATION
+      VerificationTypes.PHONE_VERIFICATION,
     );
 
     if (!result.success) {

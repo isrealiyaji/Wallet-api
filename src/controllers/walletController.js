@@ -393,7 +393,8 @@ export const walletTransfer = async (req, res) => {
  */
 export const withdrawToBank = async (req, res) => {
   try {
-    const { amount, pin, bankCode, accountNumber, accountName } = req.body;
+    const { amount, pin, bankCode, bankName, accountNumber, accountName } =
+      req.body;
     const userId = req.user.id;
 
     // Verify PIN
@@ -469,6 +470,7 @@ export const withdrawToBank = async (req, res) => {
           senderBalanceBefore: wallet.balance,
           senderBalanceAfter: newBalance,
           bankCode,
+          bankName,
           accountNumber,
           accountName,
         },

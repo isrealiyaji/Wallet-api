@@ -1,6 +1,5 @@
 import { body } from "express-validator";
 
-
 export const registerValidation = [
   body("email")
     .isEmail()
@@ -29,12 +28,10 @@ export const registerValidation = [
     .withMessage("Last name must be at least 2 characters"),
 ];
 
-
 export const loginValidation = [
   body("emailOrPhone").notEmpty().withMessage("Email or phone is required"),
   body("password").notEmpty().withMessage("Password is required"),
 ];
-
 
 export const verifyOTPValidation = [
   body("otp")
@@ -43,7 +40,6 @@ export const verifyOTPValidation = [
     .isNumeric()
     .withMessage("OTP must contain only numbers"),
 ];
-
 
 export const resetPasswordValidation = [
   body("email").isEmail().withMessage("Valid email is required"),
@@ -55,7 +51,6 @@ export const resetPasswordValidation = [
     .withMessage("Password must contain uppercase, lowercase, and number"),
 ];
 
-
 export const pinValidation = [
   body("pin")
     .isLength({ min: 4, max: 4 })
@@ -64,12 +59,10 @@ export const pinValidation = [
     .withMessage("PIN must contain only numbers"),
 ];
 
-
 export const setupPinValidation = [
   ...pinValidation,
   body("password").notEmpty().withMessage("Password is required"),
 ];
-
 
 export const changePinValidation = [
   body("oldPin")
@@ -81,7 +74,6 @@ export const changePinValidation = [
     .isNumeric()
     .withMessage("New PIN must contain only numbers"),
 ];
-
 
 export const tier1KYCValidation = [
   body("bvn")
@@ -99,7 +91,6 @@ export const tier1KYCValidation = [
     .withMessage("Address must be at least 10 characters"),
 ];
 
-
 export const tier2KYCValidation = [
   body("idType")
     .isIn(["NIN", "DRIVERS_LICENSE", "VOTERS_CARD", "INTERNATIONAL_PASSPORT"])
@@ -108,7 +99,6 @@ export const tier2KYCValidation = [
   body("idImageUrl").isURL().withMessage("Valid ID image URL is required"),
 ];
 
-
 export const tier3KYCValidation = [
   body("utilityBillUrl")
     .isURL()
@@ -116,13 +106,11 @@ export const tier3KYCValidation = [
   body("selfieUrl").isURL().withMessage("Valid selfie URL is required"),
 ];
 
-
 export const fundWalletValidation = [
   body("amount")
     .isFloat({ min: 100 })
     .withMessage("Amount must be at least ₦100"),
 ];
-
 
 export const walletTransferValidation = [
   body("recipientAccountNumber")
@@ -140,13 +128,17 @@ export const walletTransferValidation = [
     .withMessage("Description must not exceed 200 characters"),
 ];
 
-
 export const withdrawValidation = [
   body("amount")
     .isFloat({ min: 100 })
     .withMessage("Amount must be at least ₦100"),
   body("pin").isLength({ min: 4, max: 4 }).withMessage("PIN must be 4 digits"),
   body("bankCode").notEmpty().withMessage("Bank code is required"),
+  body("bankName")
+    .notEmpty()
+    .withMessage("Bank name is required")
+    .isLength({ min: 2 })
+    .withMessage("Bank name must be at least 2 characters"),
   body("accountNumber")
     .isLength({ min: 10, max: 10 })
     .withMessage("Account number must be 10 digits")
