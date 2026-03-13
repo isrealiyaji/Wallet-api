@@ -41,6 +41,13 @@ export const verifyOTPValidation = [
     .withMessage("OTP must contain only numbers"),
 ];
 
+export const forgotPasswordValidation = [
+  body("email")
+    .isEmail()
+    .withMessage("Valid email is required")
+    .normalizeEmail(),
+];
+
 export const resetPasswordValidation = [
   body("email").isEmail().withMessage("Valid email is required"),
   body("otp").isLength({ min: 6, max: 6 }).withMessage("OTP must be 6 digits"),
@@ -151,6 +158,7 @@ export default {
   registerValidation,
   loginValidation,
   verifyOTPValidation,
+  forgotPasswordValidation,
   resetPasswordValidation,
   pinValidation,
   setupPinValidation,

@@ -6,6 +6,7 @@ import {
   registerValidation,
   loginValidation,
   verifyOTPValidation,
+  forgotPasswordValidation,
   resetPasswordValidation,
 } from "../validators/index.js";
 
@@ -14,12 +15,17 @@ const router = express.Router();
 // Public routes
 router.post("/register", registerValidation, validate, authController.register);
 router.post("/login", loginValidation, validate, authController.login);
-router.post("/forgot-password", authController.forgotPassword);
+router.post(
+  "/forgot-password",
+  forgotPasswordValidation,
+  validate,
+  authController.forgotPassword,
+);
 router.post(
   "/reset-password",
   resetPasswordValidation,
   validate,
-  authController.resetPassword
+  authController.resetPassword,
 );
 
 // Protected routee
@@ -29,10 +35,19 @@ router.post(
   "/verifyemail",
   verifyOTPValidation,
   validate,
-  authController.verifyEmail
+  authController.verifyEmail,
 );
-router.post("/verifyphone", verifyOTPValidation, validate, authController.verifyPhone);
-router.post("/phone-verification", validate, authController.requestPhoneVerification);
+router.post(
+  "/verifyphone",
+  verifyOTPValidation,
+  validate,
+  authController.verifyPhone,
+);
+router.post(
+  "/phone-verification",
+  validate,
+  authController.requestPhoneVerification,
+);
 router.post("/resend-otp", authController.resendOTP);
 
 export default router;
