@@ -5,42 +5,45 @@ import validate from "../middleware/validate.js";
 import {
   setupPinValidation,
   changePinValidation,
+  changePasswordValidation,
 } from "../validators/index.js";
 
 const router = express.Router();
 
-
 router.use(authenticate);
 
-
 router.put("/update", profileController.updateProfile);
-
 
 router.post(
   "/pin/setup",
   setupPinValidation,
   validate,
-  profileController.setupPin
+  profileController.setupPin,
 );
 router.post(
   "/pin/change",
   changePinValidation,
   validate,
-  profileController.changePin
+  profileController.changePin,
 );
 
+router.post(
+  "/password/change",
+  changePasswordValidation,
+  validate,
+  profileController.changePassword,
+);
 
 router.post("/devices/register", profileController.registerDevice);
 router.get("/devices", profileController.getDevices);
 router.patch("/devices/:deviceId/trust", profileController.toggleDeviceTrust);
 router.delete("/devices/:deviceId", profileController.removeDevice);
 
-  // try {
-  //   const now = new Date();
-  //   await prisma.oTP.deleteMany({ where: { expiresAt: { lt: now } } });
-  //   console.log("Expired OTPs cleaned up successfully");
-  // } catch (error) {
-  //   console.error("Error cleaning up expired OTPs:", error);
-  // }    return { success: false, error: error.message };
+// try {
+//   const now = new Date();
+//   await prisma.oTP.deleteMany({ where: { expiresAt: { lt: now } } });
+//   console.log("Expired OTPs cleaned up successfully");
+// } catch (error) {
+//   console.error("Error cleaning up expired OTPs:", error);
+// }    return { success: false, error: error.message };
 export default router;
- 

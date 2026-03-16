@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import prisma from "../config/database.js";
 import { v4 as uuidv4 } from "uuid";
 
-
 export const setupPin = async (req, res) => {
   try {
     const { pin, password } = req.body;
@@ -21,7 +20,6 @@ export const setupPin = async (req, res) => {
       });
     }
 
-   
     const hashedPin = await bcrypt.hash(pin, 10);
 
     // Update user PIN
@@ -47,7 +45,6 @@ export const setupPin = async (req, res) => {
     });
   }
 };
-
 
 export const changePin = async (req, res) => {
   try {
@@ -102,7 +99,6 @@ export const changePin = async (req, res) => {
       });
     }
 
- 
     const hashedPin = await bcrypt.hash(newPin, 10);
 
     // Update PIN
@@ -184,7 +180,6 @@ export const verifyPin = async (pin, userId) => {
   }
 };
 
-
 export const registerDevice = async (req, res) => {
   try {
     const { deviceName, deviceType } = req.body;
@@ -220,7 +215,7 @@ export const registerDevice = async (req, res) => {
         deviceType,
         ipAddress,
         userAgent,
-        isTrusted: false, 
+        isTrusted: false,
       },
     });
 
@@ -238,7 +233,6 @@ export const registerDevice = async (req, res) => {
     });
   }
 };
-
 
 export const getDevices = async (req, res) => {
   try {
@@ -271,7 +265,6 @@ export const getDevices = async (req, res) => {
     });
   }
 };
-
 
 export const toggleDeviceTrust = async (req, res) => {
   try {
@@ -308,7 +301,6 @@ export const toggleDeviceTrust = async (req, res) => {
   }
 };
 
-
 export const removeDevice = async (req, res) => {
   try {
     const { deviceId } = req.params;
@@ -341,7 +333,6 @@ export const removeDevice = async (req, res) => {
     });
   }
 };
-
 
 export const updateProfile = async (req, res) => {
   try {
@@ -382,6 +373,55 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+export const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    // Get current user
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Verify old password
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Old password is incorrect",
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error("Change password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to change password",
+      error: error.message,
+    });
+  }
+};
+
 export default {
   setupPin,
   changePin,
@@ -391,4 +431,5 @@ export default {
   toggleDeviceTrust,
   removeDevice,
   updateProfile,
+  changePassword,
 };

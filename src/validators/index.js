@@ -58,6 +58,24 @@ export const resetPasswordValidation = [
     .withMessage("Password must contain uppercase, lowercase, and number"),
 ];
 
+export const changePasswordValidation = [
+  body("oldPassword").notEmpty().withMessage("Old password is required"),
+  body("newPassword")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage("Password must contain uppercase, lowercase, and number"),
+  body("confirmPassword")
+    .notEmpty()
+    .withMessage("Password confirmation is required")
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),
+];
+
 export const pinValidation = [
   body("pin")
     .isLength({ min: 4, max: 4 })
@@ -160,6 +178,7 @@ export default {
   verifyOTPValidation,
   forgotPasswordValidation,
   resetPasswordValidation,
+  changePasswordValidation,
   pinValidation,
   setupPinValidation,
   changePinValidation,
