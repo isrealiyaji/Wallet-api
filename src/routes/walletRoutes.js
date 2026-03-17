@@ -13,6 +13,7 @@ import {
 import validate from "../middleware/validate.js";
 import {
   fundWalletValidation,
+  bankCardFundingValidation,
   walletTransferValidation,
   withdrawValidation,
 } from "../validators/index.js";
@@ -30,15 +31,15 @@ router.post(
   fundWalletValidation,
   validate,
   checkAccountBalanceLimit,
-  walletController.fundViaBankTransfer
+  walletController.fundViaBankTransfer,
 );
 router.post(
-  "/fund/card",
+  "/fund/bankcard",
   requireKYCLevel("TIER1"),
-  fundWalletValidation,
+  bankCardFundingValidation,
   validate,
   checkAccountBalanceLimit,
-  walletController.fundViaCard
+  walletController.fundViaBankCard,
 );
 
 router.post(
@@ -48,7 +49,7 @@ router.post(
   validate,
   validateTransactionAmount,
   checkDailyLimit,
-  walletController.walletTransfer
+  walletController.walletTransfer,
 );
 router.post(
   "/withdraw",
@@ -57,13 +58,13 @@ router.post(
   validate,
   validateTransactionAmount,
   checkDailyLimit,
-  walletController.withdrawToBank
+  walletController.withdrawToBank,
 );
 
 router.get("/transactions", walletController.getTransactions);
 router.get(
   "/transactions/:reference",
-  walletController.getTransactionByReference
+  walletController.getTransactionByReference,
 );
 
 export default router;

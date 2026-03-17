@@ -152,15 +152,15 @@ export const fundViaBankTransfer = async (req, res) => {
 /**
  * Fund wallet via card (Paystack integration)
  */
-export const fundViaCard = async (req, res) => {
+export const fundViaBankCard = async (req, res) => {
   try {
     const { amount, reference } = req.body;
     const userId = req.user.id;
 
-    // In production, verify payment with Paystack
+    // In production, verify payment with payment gateway
     // For now, we'll simulate successful payment
 
-    const fee = calculateTransactionFee(amount, "CARD_FUNDING");
+    const fee = calculateTransactionFee(amount, "BANK_CARD_FUNDING");
     const totalAmount = parseFloat(amount) + fee;
 
     const result = await prisma.$transaction(async (tx) => {
@@ -194,10 +194,10 @@ export const fundViaCard = async (req, res) => {
           fee,
           totalAmount,
           type: "CREDIT",
-          category: "CARD_FUNDING",
+          category: "BANK_CARD_FUNDING",
           status: "SUCCESSFUL",
           currency: wallet.currency,
-          description: "Wallet funding via card",
+          description: "Wallet funding via bank card",
           receiverId: userId,
           receiverWalletId: wallet.id,
           receiverBalanceBefore: wallet.balance,
@@ -217,7 +217,7 @@ export const fundViaCard = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Card funding error:", error);
+    console.error("Bank card funding error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fund wallet",
@@ -642,7 +642,7 @@ export const getTransactionByReference = async (req, res) => {
 export default {
   getWallet,
   fundViaBankTransfer,
-  fundViaCard,
+  fundViaBankCard,
   walletTransfer,
   withdrawToBank,
   getTransactions,

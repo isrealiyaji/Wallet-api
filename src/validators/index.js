@@ -137,6 +137,28 @@ export const fundWalletValidation = [
     .withMessage("Amount must be at least ₦100"),
 ];
 
+export const bankCardFundingValidation = [
+  ...fundWalletValidation,
+  body("cardNumber")
+    .matches(/^\d{13,19}$/)
+    .withMessage("Valid card number (13-19 digits) is required"),
+  body("cardholderName")
+    .trim()
+    .notEmpty()
+    .withMessage("Cardholder name is required")
+    .isLength({ min: 2 })
+    .withMessage("Cardholder name must be at least 2 characters"),
+  body("expiryMonth")
+    .matches(/^(0[1-9]|1[0-2])$/)
+    .withMessage("Valid expiry month (MM) is required"),
+  body("expiryYear")
+    .matches(/^\d{2}$/)
+    .withMessage("Valid expiry year (YY) is required"),
+  body("cvv")
+    .matches(/^\d{3,4}$/)
+    .withMessage("Valid CVV (3-4 digits) is required"),
+];
+
 export const walletTransferValidation = [
   body("recipientAccountNumber")
     .isLength({ min: 10, max: 10 })
@@ -186,6 +208,7 @@ export default {
   tier2KYCValidation,
   tier3KYCValidation,
   fundWalletValidation,
+  bankCardFundingValidation,
   walletTransferValidation,
   withdrawValidation,
 };
