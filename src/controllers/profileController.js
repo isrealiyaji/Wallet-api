@@ -208,7 +208,7 @@ export const registerDevice = async (req, res) => {
 
     // Register device
     const device = await prisma.device.create({
-      data: {
+      data: {                                                                                                                                                       
         userId,
         deviceId,
         deviceName,
