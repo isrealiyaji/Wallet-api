@@ -102,8 +102,8 @@ export const changePinValidation = [
 
 export const tier1KYCValidation = [
   body("bvn")
-    .isLength({ min: 11, max: 11 })
-    .withMessage("BVN must be 11 digits")
+    .isLength({ min: 10, max: 10 })
+    .withMessage("BVN must be 10 digits")
     .isNumeric()
     .withMessage("BVN must contain only numbers"),
   body("dateOfBirth")
